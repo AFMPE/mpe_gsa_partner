@@ -32,5 +32,6 @@ variable "bastion_admin_username" {
 variable "bastion_admin_password" {
   description = "The admin password to use for the bastion host."
   type        = string
-  default     = "Mpe@2020"
+  default     = null
+  sensitive = true
 }

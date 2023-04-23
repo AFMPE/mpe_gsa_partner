@@ -74,3 +74,12 @@ allow_virtual_spoke_network_access = true
 allow_forwarded_spoke_traffic      = true
 allow_gateway_spoke_transit        = true
 use_remote_spoke_gateway           = false
+
+#####################################
+## Bastion Jumpbox Configuration  ###
+#####################################
+
+virtual_machine_admins = []
+virtual_machine_users = []
+bastion_vm_size = "Standard_D2s_v3"
+bastion_admin_username = "mpeadminuser"

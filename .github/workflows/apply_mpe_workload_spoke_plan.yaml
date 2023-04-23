@@ -1,29 +1,9 @@
 name: Apply MPE Workload Spoke terraform plan
 
 on:
-  workflow_dispatch:
-    inputs:
-      workload_subscription_id:
-        type: string
-        required: true
-        description: 'The subscription ID of the workload subscription'
-      workload_name:
-        type: string
-        required: true
-        description: 'The name of the workload'
-      hub_resource_id:
-        type: string
-        required: true
-        description: 'The resource ID of the hub to which the spoke will be connected'      
-      firewall_private_ipaddress:
-        type: string
-        required: true
-        description: 'The private IP address of the firewall'
-      create_plan:
-        type: boolean
-        required: false
-        default: false
-        description: 'Create a plan for the workload spoke'
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
