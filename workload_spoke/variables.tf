@@ -21,11 +21,6 @@ variable "subscription_id" {
   type        = string
 }
 
-variable "firewall_private_ip" {
-  description = "The private IP address of the firewall."
-  type        = string
-}
-
 variable "location" {
   type        = string
   description = "If specified, will set the Azure region in which region bound resources will be deployed. Please see: https://azure.microsoft.com/en-gb/global-infrastructure/geographies/"

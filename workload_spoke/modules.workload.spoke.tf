@@ -22,7 +22,7 @@ AUTHOR/S: jspinella
 // Resources for the Operations Spoke
 module "mod_workload_network" {
   source  = "azurenoops/overlays-hubspoke/azurerm//modules/virtual-network-spoke"
-  version = "~> 1.0.7"
+  version = "~> 1.0.8"
 
   #####################################
   ## Global Settings Configuration  ###
@@ -57,7 +57,7 @@ module "mod_workload_network" {
   hub_virtual_network_id = data.terraform_remote_state.mpe_landing_zone.outputs.hub_virtual_network_id
 
   # Firewall Private IP Address 
-  hub_firewall_private_ip_address = var.firewall_private_ip
+  hub_firewall_private_ip_address = data.terraform_remote_state.mpe_landing_zone.outputs.firewall_private_ip
 
   # (Optional) Operations Network Security Group
   # This is default values, do not need this if keeping default values
