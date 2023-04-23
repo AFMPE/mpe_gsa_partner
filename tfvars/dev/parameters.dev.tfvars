@@ -24,14 +24,22 @@ enable_resource_locks = false
 
 subscription_id = "65798e1e-c177-4373-ac3b-921f11f737c8"
 
+##############################################
+## Prod Remote Storage State Configuration  ##
+##############################################
+
+# Deployment state storage information
+state_sa_name           = "afmpetfmgtprodh8dc4qua"
+state_sa_rg             = "afmpe-network-artifacts-rg"
+state_sa_container_name = "core-mgt-prod-tfstate"
+
 ###############################
 # Workload Virtual Network  ###
 ###############################
 
 deployed_to_hub_subscription = false
 deny_all_inbound             = false
-hub_virtual_network_id       = "/subscriptions/7eb60145-02f2-4fc1-80d2-e25d2ce9e45d/resourceGroups/ampe-eus-hub-core-prod-rg/providers/Microsoft.Network/virtualNetworks/ampe-eus-hub-core-prod-vnet"
-firewall_private_ip          = "10.0.100.4"
+firewall_private_ip          = "10.0.100.4" # This is the private IP of the firewall in the hub vnet. Have to update outputs in hub vnet to get this value.
 
 wl_vnet_address_space           = ["10.0.125.0/24"]
 wl_vnet_subnet_address_prefixes = ["10.0.125.0/27"]

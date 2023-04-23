@@ -22,9 +22,9 @@ default_location = "eastus"
 # Enable locks on resources
 enable_resource_locks = false
 
-#########################################
-## Remote Storage State Configuration  ##
-#########################################
+##############################################
+## Prod Remote Storage State Configuration  ##
+##############################################
 
 # Deployment state storage information
 state_sa_name           = "afmpetfmgth8dc4qua"

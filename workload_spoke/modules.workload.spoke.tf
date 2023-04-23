@@ -54,7 +54,7 @@ module "mod_workload_network" {
   add_subnets = var.wl_vnet_subnets
 
   # Hub Virtual Network ID
-  hub_virtual_network_id = var.hub_virtual_network_id
+  hub_virtual_network_id = data.terraform_remote_state.mpe_landing_zone.outputs.hub_virtual_network_id
 
   # Firewall Private IP Address 
   hub_firewall_private_ip_address = var.firewall_private_ip
@@ -69,6 +69,7 @@ module "mod_workload_network" {
   # Network Security Group Rules to apply to the Operatioms Virtual Network
   nsg_additional_rules = var.wl_nsg_rules
 
+  # Enable forced tunneling on the route table
   enable_forced_tunneling_on_route_table = var.enable_forced_tunneling_on_route_table
 
   #############################
