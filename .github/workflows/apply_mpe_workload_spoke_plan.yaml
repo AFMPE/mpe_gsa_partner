@@ -1,4 +1,4 @@
-name: Apply MPE Workload Spoke terraform plan
+name: Apply MPE Partner Workload Spoke terraform plan
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    name: Apply a plan for an MPE Workload Spoke terraform configuration
+    name: Apply a plan for an MPE Partner Workload Spoke terraform configuration
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}

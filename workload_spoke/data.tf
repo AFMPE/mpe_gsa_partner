@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-data "terraform_remote_state" "mpe_landing_zone" {
+/* data "terraform_remote_state" "mpe_landing_zone" {
   backend = "azurerm"
 
   config = {
@@ -10,4 +10,4 @@ data "terraform_remote_state" "mpe_landing_zone" {
     key                  = "ampe"
     resource_group_name  = var.state_sa_rg
   }
-}
+} */

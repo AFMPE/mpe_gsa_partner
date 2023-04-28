@@ -41,13 +41,49 @@ deployed_to_hub_subscription = false
 deny_all_inbound             = false
 firewall_private_ip          = "10.0.100.4" # This is the private IP of the firewall in the hub vnet. Have to update outputs in hub vnet to get this value.
 
-wl_vnet_address_space           = ["10.0.125.0/24"]
+wl_vnet_address_space           = ["10.0.124.0/23"]
 wl_vnet_subnet_address_prefixes = ["10.0.125.0/27"]
 wl_vnet_subnet_service_endpoints = [
   "Microsoft.KeyVault",
   "Microsoft.Sql",
   "Microsoft.Storage",
 ]
+
+wl_vnet_subnets = {
+  "apim_snet" = {
+    name             = "apim"
+    address_prefixes = ["10.0.125.32/27"]
+    service_endpoints = [
+      "Microsoft.KeyVault",
+      "Microsoft.Sql",
+      "Microsoft.Storage",
+    ]
+    private_endpoint_network_policies_enabled  = true
+    private_endpoint_service_endpoints_enabled = false
+  }
+  "pe_snet" = {
+    name             = "pe"
+    address_prefixes = ["10.0.125.64/27"]
+    service_endpoints = [
+      "Microsoft.KeyVault",
+      "Microsoft.Sql",
+      "Microsoft.Storage",
+    ]
+    private_endpoint_network_policies_enabled  = true
+    private_endpoint_service_endpoints_enabled = false
+  }
+  "app_snet" = {
+    name             = "app"
+    address_prefixes = ["10.0.124.0/24"]
+    service_endpoints = [
+      "Microsoft.KeyVault",
+      "Microsoft.Sql",
+      "Microsoft.Storage",
+    ]
+    private_endpoint_network_policies_enabled  = true
+    private_endpoint_service_endpoints_enabled = false
+  }
+}
 
 enable_forced_tunneling_on_route_table = true
 
@@ -80,6 +116,7 @@ use_remote_spoke_gateway           = false
 #####################################
 
 virtual_machine_admins = []
-virtual_machine_users = []
-bastion_vm_size = "Standard_D2s_v3"
+virtual_machine_users  = []
+bastion_vm_size        = "Standard_D2s_v3"
 bastion_admin_username = "mpeadminuser"
+bastion_admin_password = "Password1234!"

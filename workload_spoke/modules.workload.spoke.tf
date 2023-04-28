@@ -54,10 +54,10 @@ module "mod_workload_network" {
   add_subnets = var.wl_vnet_subnets
 
   # Hub Virtual Network ID
-  hub_virtual_network_id = data.terraform_remote_state.mpe_landing_zone.outputs.hub_virtual_network_id
+  hub_virtual_network_id = "/subscriptions/7eb60145-02f2-4fc1-80d2-e25d2ce9e45d/resourceGroups/ampe-eus-hub-core-prod-rg/providers/Microsoft.Network/virtualNetworks/ampe-eus-hub-core-prod-vnet" #data.terraform_remote_state.mpe_landing_zone.outputs.hub_virtual_network_id
 
   # Firewall Private IP Address 
-  hub_firewall_private_ip_address = data.terraform_remote_state.mpe_landing_zone.outputs.firewall_private_ip
+  hub_firewall_private_ip_address = "10.0.100.4" #data.terraform_remote_state.mpe_landing_zone.outputs.firewall_private_ip
 
   # (Optional) Operations Network Security Group
   # This is default values, do not need this if keeping default values

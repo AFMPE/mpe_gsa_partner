@@ -12,29 +12,28 @@ AUTHOR/S: jspinella
 #####################################
 
 resource "azurerm_network_interface" "bastion_jumpbox_nic" {
-  count               = local.enable_bastion_host ? 1 : 0
-  name                = data.azurenoopsutils_resource_name.bastion_nic.result
+  name                = "ampe-gsa-eus-dev-bas-nic" #data.azurenoopsutils_resource_name.bastion_nic.result
   location            = module.mod_azure_region_lookup.location_cli
-  resource_group_name = module.mod_workload_network.spoke_resource_group_name
+  resource_group_name = "ampe-gsa-eus-dev-rg"#module.mod_workload_network.0.resource_group_name
 
   ip_configuration {
     name                          = "bastion-jumpbox-ipconfig"
-    subnet_id                     = data.terraform_remote_state.landing_zone.outputs.svcs_default_subnet_id
+    subnet_id                     = "/subscriptions/65798e1e-c177-4373-ac3b-921f11f737c8/resourceGroups/ampe-gsa-eus-dev-rg/providers/Microsoft.Network/virtualNetworks/ampe-gsa-eus-dev-vnet/subnets/ampe-gsa-eus-dev-snet"
     private_ip_address_allocation = "Dynamic"
   }
 }
 
 resource "azurerm_windows_virtual_machine" "bastion_jumpbox_vm" {
-  count               = local.enable_bastion_host ? 1 : 0
-  name                = data.azurenoopsutils_resource_name.bastion_vm.result
-  resource_group_name = module.mod_workload_network.spoke_resource_group_name
+  name                = "ampe-gsa-eus-dev-bas-vm" #data.azurenoopsutils_resource_name.bastion_vm.result
+  resource_group_name = "ampe-gsa-eus-dev-rg"#module.mod_workload_network.0.resource_group_name
   location            = module.mod_azure_region_lookup.location_cli
+  computer_name = "mpegsadevbasvm"
   size                = var.bastion_vm_size
   admin_username      = var.bastion_admin_username
   admin_password      = var.bastion_admin_password
   
   network_interface_ids = [
-    azurerm_network_interface.bastion_jumpbox_nic.0.id,
+    azurerm_network_interface.bastion_jumpbox_nic.id,
   ]
 
   os_disk {
@@ -55,7 +54,7 @@ resource "azurerm_dev_test_global_vm_shutdown_schedule" "vm_schedule" {
   location              = module.mod_azure_region_lookup.location_cli
   enabled               = true
   daily_recurrence_time = "2000"
-  timezone              = module.mod_azure_region_lookup.location_cli
+  timezone              = "SA Eastern Standard Time"
   notification_settings {
     enabled = false
   }
