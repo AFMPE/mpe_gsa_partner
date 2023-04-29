@@ -12,9 +12,9 @@ AUTHOR/S: jspinella
 #####################################
 
 resource "azurerm_network_interface" "bastion_jumpbox_nic" {
-  name                = "ampe-gsa-eus-dev-bas-nic" #data.azurenoopsutils_resource_name.bastion_nic.result
+  name                = "ampe-gsa-eus-dev-bas-nic"
   location            = module.mod_azure_region_lookup.location_cli
-  resource_group_name = "ampe-gsa-eus-dev-rg"#module.mod_workload_network.0.resource_group_name
+  resource_group_name = "ampe-gsa-eus-dev-rg" #module.mod_workload_network.0.resource_group_name
 
   ip_configuration {
     name                          = "bastion-jumpbox-ipconfig"
@@ -24,14 +24,14 @@ resource "azurerm_network_interface" "bastion_jumpbox_nic" {
 }
 
 resource "azurerm_windows_virtual_machine" "bastion_jumpbox_vm" {
-  name                = "ampe-gsa-eus-dev-bas-vm" #data.azurenoopsutils_resource_name.bastion_vm.result
-  resource_group_name = "ampe-gsa-eus-dev-rg"#module.mod_workload_network.0.resource_group_name
+  name                = "ampe-gsa-eus-dev-bas-vm"
+  resource_group_name = "ampe-gsa-eus-dev-rg" #module.mod_workload_network.0.resource_group_name
   location            = module.mod_azure_region_lookup.location_cli
-  computer_name = "mpegsadevbasvm"
+  computer_name       = "mpegsadevbasvm"
   size                = var.bastion_vm_size
   admin_username      = var.bastion_admin_username
   admin_password      = var.bastion_admin_password
-  
+
   network_interface_ids = [
     azurerm_network_interface.bastion_jumpbox_nic.id,
   ]

@@ -82,6 +82,12 @@ wl_vnet_subnets = {
     ]
     private_endpoint_network_policies_enabled  = true
     private_endpoint_service_endpoints_enabled = false
+    delegation = {
+      name = "app_service_delegation"
+      service_delegation = {
+        service_delegation_name = "Microsoft.Web/hostingEnvironments"
+      }
+    }
   }
 }
 
@@ -96,7 +102,7 @@ wl_nsg_rules = [
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_ranges    = ["22", "80", "443", "3389"]
-    source_address_prefixes    = ["10.0.120.0/26", "10.0.115.0/26"]
+    source_address_prefixes    = ["10.0.120.0/26", "10.0.115.0/26", "10.0.100.0/24"]
     destination_address_prefix = "10.0.125.0/24"
   },
 ]
@@ -119,4 +125,3 @@ virtual_machine_admins = []
 virtual_machine_users  = []
 bastion_vm_size        = "Standard_D2s_v3"
 bastion_admin_username = "mpeadminuser"
-bastion_admin_password = "Password1234!"

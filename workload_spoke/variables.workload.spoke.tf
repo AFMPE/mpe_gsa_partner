@@ -24,14 +24,7 @@ variable "wl_vnet_subnet_address_prefixes" {
 }
 
 variable "wl_vnet_subnets" {
-  description = "A list of subnets to add to the workload virtual network"
-  type = map(object({
-    name                                       = string
-    address_prefixes                           = list(string)
-    service_endpoints                          = list(string)
-    private_endpoint_network_policies_enabled  = bool
-    private_endpoint_service_endpoints_enabled = bool
-  }))
+  description = "A list of subnets to add to the workload virtual network"  
   default = {
     /*  "wl-vnet-subnet-01" = {
       name                                       = "wl-vnet-subnet-01"

@@ -22,7 +22,7 @@ AUTHOR/S: jspinella
 // Resources for the Operations Spoke
 module "mod_workload_network" {
   source  = "azurenoops/overlays-hubspoke/azurerm//modules/virtual-network-spoke"
-  version = "~> 1.0.8"
+  version = "~> 1.2.1"
 
   #####################################
   ## Global Settings Configuration  ###
@@ -49,7 +49,7 @@ module "mod_workload_network" {
   spoke_subnet_service_endpoints                      = var.wl_vnet_subnet_service_endpoints
   spoke_private_endpoint_network_policies_enabled     = false
   spoke_private_link_service_network_policies_enabled = true
-
+  
   # Provide additional subnets to be added to the spoke virtual network
   add_subnets = var.wl_vnet_subnets
 
