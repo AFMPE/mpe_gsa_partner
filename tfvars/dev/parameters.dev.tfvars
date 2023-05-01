@@ -125,3 +125,16 @@ virtual_machine_admins = []
 virtual_machine_users  = []
 bastion_vm_size        = "Standard_D2s_v3"
 bastion_admin_username = "mpeadminuser"
+
+#########################
+## SQL Configuration  ###
+#########################
+
+sql_databases = [
+  {
+    name        = "gsadb"
+    max_size_gb = 5
+  }
+]
+
+enable_private_endpoint = true
