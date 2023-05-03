@@ -41,3 +41,9 @@ provider "azurerm" {
     }
   }
 }
+
+provider "azurerm" {
+  alias           = "hub_network"
+  subscription_id = var.hub_subscription_id
+  features {}
+}
