@@ -24,7 +24,7 @@ variable "wl_vnet_subnet_address_prefixes" {
 }
 
 variable "wl_vnet_subnets" {
-  description = "A list of subnets to add to the workload virtual network"  
+  description = "A list of subnets to add to the workload virtual network"
   default = {
     /*  "wl-vnet-subnet-01" = {
       name                                       = "wl-vnet-subnet-01"
@@ -54,6 +54,17 @@ variable "wl_nsg_rules" {
     destination_port_ranges    = list(string)
     source_address_prefixes    = list(string)
     destination_address_prefix = string
+  }))
+  default = null
+}
+
+variable "wl_route_table_routes" {
+  description = "A list of routes to add to the workload virtual network route tables."
+  type = map(object({
+    name                   = string
+    address_prefix         = string
+    next_hop_type          = string
+    next_hop_in_ip_address = optional(string)
   }))
   default = null
 }

@@ -1,13 +1,19 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-/* data "terraform_remote_state" "mpe_landing_zone" {
-  backend = "azurerm"
+data "azurerm_resource_group" "hub_rg" {
+  provider = azurerm.hub_network
+  name     = var.hub_rg_name
+}
 
-  config = {
-    storage_account_name = var.state_sa_name
-    container_name       = var.state_sa_container_name
-    key                  = "ampe"
-    resource_group_name  = var.state_sa_rg
-  }
-} */
+data "azurerm_virtual_network" "hub_vnet" {
+  provider            = azurerm.hub_network
+  name                = var.hub_vnet_name
+  resource_group_name = data.azurerm_resource_group.hub_rg.name
+}
+
+data "azurerm_firewall" "hub_fw" {
+  provider            = azurerm.hub_network
+  name                = var.hub_fw_name
+  resource_group_name = data.azurerm_resource_group.hub_rg.name
+}

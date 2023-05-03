@@ -14,18 +14,18 @@ AUTHOR/S: jspinella
 resource "azurerm_network_interface" "bastion_jumpbox_nic" {
   name                = "ampe-gsa-eus-dev-bas-nic"
   location            = module.mod_azure_region_lookup.location_cli
-  resource_group_name = "ampe-gsa-eus-dev-rg" #module.mod_workload_network.0.resource_group_name
+  resource_group_name = module.mod_workload_network.resource_group_name
 
   ip_configuration {
     name                          = "bastion-jumpbox-ipconfig"
-    subnet_id                     = "/subscriptions/65798e1e-c177-4373-ac3b-921f11f737c8/resourceGroups/ampe-gsa-eus-dev-rg/providers/Microsoft.Network/virtualNetworks/ampe-gsa-eus-dev-vnet/subnets/ampe-gsa-eus-dev-snet"
+    subnet_id                     = module.mod_workload_network.default_subnet_id
     private_ip_address_allocation = "Dynamic"
   }
 }
 
 resource "azurerm_windows_virtual_machine" "bastion_jumpbox_vm" {
   name                = "ampe-gsa-eus-dev-bas-vm"
-  resource_group_name = "ampe-gsa-eus-dev-rg" #module.mod_workload_network.0.resource_group_name
+  resource_group_name = module.mod_workload_network.resource_group_name
   location            = module.mod_azure_region_lookup.location_cli
   computer_name       = "mpegsadevbasvm"
   size                = var.bastion_vm_size
