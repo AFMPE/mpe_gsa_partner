@@ -9,9 +9,6 @@ AUTHOR/S: jspinella
 */
 
 module "mod_gsa_sql" {
-  depends_on = [
-    module.mod_workload_network
-  ]
   source  = "azurenoops/overlays-azsql/azurerm"
   version = ">= 0.2.4"
 
@@ -32,8 +29,8 @@ module "mod_gsa_sql" {
   # The password must be at least 8 characters long and contain
   # characters from three of the following categories: English uppercase letters,
   # English lowercase letters, numbers (0-9), and non-alphanumeric characters (!, $, #, %, etc.).
-  administrator_login = var.sql_admin_login
-
+  administrator_login    = var.sql_admin_login
+  administrator_password = var.sql_admin_password
   # SQL server extended auditing policy defaults to `true`. 
   # To turn off set enable_sql_server_extended_auditing_policy to `false`  
   # DB extended auditing policy defaults to `false`. 

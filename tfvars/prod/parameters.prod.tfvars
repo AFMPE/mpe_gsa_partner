@@ -22,15 +22,6 @@ default_location = "eastus"
 # Enable locks on resources
 enable_resource_locks = false
 
-##############################################
-## Prod Remote Storage State Configuration  ##
-##############################################
-
-# Deployment state storage information
-state_sa_name           = "afmpetfmgth8dc4qua"
-state_sa_rg             = "afmpe-network-artifacts-rg"
-state_sa_container_name = "core-mgt-tfstate"
-
 ###############################
 # Workload Virtual Network  ###
 ###############################

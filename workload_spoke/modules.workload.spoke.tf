@@ -49,7 +49,7 @@ module "mod_workload_network" {
   spoke_subnet_service_endpoints                      = var.wl_vnet_subnet_service_endpoints
   spoke_private_endpoint_network_policies_enabled     = false
   spoke_private_link_service_network_policies_enabled = true
-  
+
   # Provide additional subnets to be added to the spoke virtual network
   add_subnets = var.wl_vnet_subnets
 

@@ -9,9 +9,6 @@ AUTHOR/S: jspinella
 */
 
 module "mod_az_maps" {
-  depends_on = [
-    module.mod_workload_network
-  ]
   source  = "azurenoops/overlays-azmaps/azurerm"
   version = ">= 1.0.0"
 

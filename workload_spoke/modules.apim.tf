@@ -16,9 +16,6 @@ AUTHOR/S: jspinella, jscott
 */
 
 module "mod_apim" {
-  depends_on = [
-    module.mod_workload_network
-  ]
   source  = "azurenoops/overlays-api-management/azurerm"
   version = ">= 1.0.0"
 

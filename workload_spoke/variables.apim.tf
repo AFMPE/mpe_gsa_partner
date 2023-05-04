@@ -5,17 +5,17 @@
 # API Management Configuration     ##
 #####################################
 
-variable "sku_tier"{
+variable "sku_tier" {
   description = "The tier of the API Management instance. Possible values are Developer, Basic, Standard, Premium, Consumption."
   type        = string
   default     = "Developer"
 }
-variable "sku_capacity"{
+variable "sku_capacity" {
   description = "The capacity of the API Management instance. Possible values are positive integers from 1-12, except for Consumption tier where it is 0."
   type        = number
   default     = 1
 }
-variable virtual_network_type {
+variable "virtual_network_type" {
   description = "The type of the virtual network. Possible values are External, Internal, None."
   type        = string
   default     = "Internal"
@@ -61,7 +61,7 @@ variable "apim_subnet_name" {
 variable "private_endpoint_subnet_prefix" {
   description = "The address prefix to use for the subnet."
   type        = list(string)
-  default = []
+  default     = []
 }
 
 variable "private_endpoint_subnet_name" {

@@ -3,25 +3,25 @@
 
 # Organization name
 variable "org_name" {
-  type = string
+  type        = string
   description = "mpe"
-  default = "afmpe-gsa"
+  default     = "afmpe-gsa"
 }
 # Environment
 variable "environment" {
-  type = string
+  type        = string
   description = "This variable defines the environment to be built"
-  default = "dev"
+  default     = "dev"
 }
 # Azure region
 variable "location" {
-  type = string
+  type        = string
   description = "Azure region where resources will be created"
-  default = "eastus"
+  default     = "eastus"
 }
 
 variable "subscription_id" {
-  type = string
+  type        = string
   description = "Azure subscription ID"
-  default = "65798e1e-c177-4373-ac3b-921f11f737c8"
+  default     = "65798e1e-c177-4373-ac3b-921f11f737c8"
 }

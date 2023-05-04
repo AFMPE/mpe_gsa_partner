@@ -9,18 +9,25 @@ variable "sql_admin_login" {
   description = "The admin username to use for the SQL Server."
   type        = string
   default     = "admingsadev"
-  sensitive = true
+  sensitive   = true
+}
+
+variable "sql_admin_password" {
+  description = "The admin password to use for the SQL Server."
+  type        = string
+  default     = "P@ssw0rd1234!"
+  sensitive   = true
 }
 
 variable "ad_admin_login_name" {
   description = "The admin password to use for the SQL Server."
   type        = string
   default     = "gsa_admins@missionpartners.us"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "sql_databases" {
-  description = "List of databases to create."  
+  description = "List of databases to create."
   default     = []
 }
 

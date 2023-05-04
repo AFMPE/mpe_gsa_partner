@@ -13,7 +13,7 @@ locals {
 # Hex number is represented as four digits wide and is zero padded
 locals {
   telem_workload_bitfield_denery = (
-    local.telem_workload_deploy 
+    local.telem_workload_deploy
   )
   telem_workload_bitfield_hex = format("%04x", local.telem_workload_bitfield_denery)
 }
