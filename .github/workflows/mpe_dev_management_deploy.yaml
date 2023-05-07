@@ -28,7 +28,7 @@ jobs:
         with:
           path: src
           variables: |
-            subscription_id_hub               = "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+            subscription_id_hub               = "${{ secrets.ARM_HUB_SUBSCRIPTION_ID }}"
             subscription_id_partners_gsa_dev  = "${{ secrets.AZURE_PARTNER_GSA_DEV_SUBSCRIPTION_ID }}"          
           var_file: |
             tfvars/parameters.gsa.tfvars
