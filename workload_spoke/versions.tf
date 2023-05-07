@@ -27,7 +27,7 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
+  subscription_id = coalesce(var.subscription_id_partners_gsa_dev, var.subscription_id_partners_gsa_prod)
 
   features {
     log_analytics_workspace {
@@ -44,6 +44,6 @@ provider "azurerm" {
 
 provider "azurerm" {
   alias           = "hub_network"
-  subscription_id = var.hub_subscription_id
+  subscription_id = var.subscription_id_hub
   features {}
 }

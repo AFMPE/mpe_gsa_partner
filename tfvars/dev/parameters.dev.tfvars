@@ -202,13 +202,59 @@ app_service_apps = {
     enable_private_endpoint      = true
     existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
     create_app_service_plan      = true
-    health_check_path            = "/health"
-    application_stack            = "dotnet"
-    dotnet_version               = "v6.0"
+    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
+    deployment_slot_count        = 1
+    app_service_resource_type    = "App"
+    app_service_plan_os_type     = "Windows"
+    site_config = {
+      always_on = true
+      application_stack = {
+        current_stack  = "dotnet"
+        dotnet_version = "v6.0"
+      }
+      use_32_bit_worker        = false
+      health_check_path        = "/health"
+      ftps_state               = "Disabled"
+      http2_enabled            = true
+      http_logging_enabled     = true
+      min_tls_version          = "1.2"
+      remote_debugging_enabled = true
+      websockets_enabled       = false
+    }
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+  },
+  "directus-subsystem" = {
+    workload_name                = "dus"
+    app_service_name             = "directus-subsystem"
+    app_service_plan_sku_name    = "I1v2"
+    enable_private_endpoint      = true
+    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
+    create_app_service_plan      = true
     private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
     deployment_slot_count        = 2
     app_service_resource_type    = "App"
-    app_service_plan_os_type     = "Windows"
+    app_service_plan_os_type     = "Linux"
+    site_config = {
+      always_on = true
+      application_stack = {
+        docker_image     = "directus/directus"
+        docker_image_tag = "9.23.1"
+        dotnet_version = "6.0"
+      }
+      container_registry_use_managed_identity = true
+      health_check_path                       = "/server/health"
+      ftps_state                              = "Disabled"
+      http2_enabled                           = true
+      http_logging_enabled                    = true
+      min_tls_version                         = "1.2"
+      remote_debugging_enabled                = true
+      websockets_enabled                      = false
+    }
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+    create_app_container_registry = true
+    acr_sku                       = "Premium"
   },
   "high-throughput-api-subsystem" = {
     workload_name                = "htas"
@@ -217,13 +263,54 @@ app_service_apps = {
     enable_private_endpoint      = true
     existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
     create_app_service_plan      = true
-    health_check_path            = "/health"
-    application_stack            = "dotnet"
-    dotnet_version               = "v6.0"
+    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
+    deployment_slot_count        = 1
+    app_service_resource_type    = "FunctionApp"
+    app_service_plan_os_type     = "Windows"
+    site_config = {
+      always_on = true
+      application_stack = {
+        dotnet_version = "v6.0"
+      }
+      use_32_bit_worker        = false
+      health_check_path        = "/health"
+      ftps_state               = "Disabled"
+      http2_enabled            = true
+      http_logging_enabled     = true
+      min_tls_version          = "1.2"
+      remote_debugging_enabled = true
+      websockets_enabled       = false
+    }
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+  },
+  "symbology-api-subsystem" = {
+    workload_name                = "symas"
+    app_service_name             = "symbology-api-subsystem"
+    app_service_plan_sku_name    = "I1v2"
+    enable_private_endpoint      = true
+    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
+    create_app_service_plan      = true
     private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
     deployment_slot_count        = 2
     app_service_resource_type    = "FunctionApp"
     app_service_plan_os_type     = "Windows"
+    site_config = {
+      always_on = true
+      application_stack = {
+        node_version = "~18"
+      }
+      use_32_bit_worker        = false
+      health_check_path        = "/health"
+      ftps_state               = "Disabled"
+      http2_enabled            = true
+      http_logging_enabled     = true
+      min_tls_version          = "1.2"
+      remote_debugging_enabled = true
+      websockets_enabled       = false
+    }
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
   },
   "timer-subsystem" = {
     workload_name                = "ts"
@@ -232,13 +319,28 @@ app_service_apps = {
     enable_private_endpoint      = true
     existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
     create_app_service_plan      = true
-    health_check_path            = "/health"
-    application_stack            = "dotnet"
-    dotnet_version               = "v6.0"
+    create_app_service_plan      = true
     private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
+    virtual_network_name         = "ampe-gsa-eus-dev-vnet"
     deployment_slot_count        = 2
     app_service_resource_type    = "FunctionApp"
     app_service_plan_os_type     = "Windows"
+    site_config = {
+      always_on = true
+      application_stack = {
+        dotnet_version = "v6.0"
+      }
+      use_32_bit_worker        = false
+      health_check_path        = "/health"
+      ftps_state               = "Disabled"
+      http2_enabled            = true
+      http_logging_enabled     = true
+      min_tls_version          = "1.2"
+      remote_debugging_enabled = true
+      websockets_enabled       = false
+    }
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
   },
   "web-client-subsystem" = {
     workload_name                = "wcs"
@@ -247,13 +349,28 @@ app_service_apps = {
     enable_private_endpoint      = true
     existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
     create_app_service_plan      = true
-    health_check_path            = "/health.html"
-    application_stack            = "dotnet"
-    dotnet_version               = "v6.0"
     private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
+    virtual_network_name         = "ampe-gsa-eus-dev-vnet"
     deployment_slot_count        = 2
     app_service_resource_type    = "App"
     app_service_plan_os_type     = "Windows"
+    site_config = {
+      always_on = true
+      application_stack = {
+        current_stack  = "dotnet"
+        dotnet_version = "v6.0"
+      }
+      use_32_bit_worker        = false
+      health_check_path        = "/health.html"
+      ftps_state               = "Disabled"
+      http2_enabled            = true
+      http_logging_enabled     = true
+      min_tls_version          = "1.2"
+      remote_debugging_enabled = true
+      websockets_enabled       = false
+    }
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
   },
 }
 

@@ -16,12 +16,18 @@ variable "default_tags" {
   default     = {}
 }
 
-variable "subscription_id" {
+variable "subscription_id_partners_gsa_dev" {
   description = "The Azure Subscription ID where the resources in this module should be deployed."
   type        = string
 }
 
-variable "hub_subscription_id" {
+variable "subscription_id_partners_gsa_prod" {
+  description = "The Azure Subscription ID where the resources in this module should be deployed."
+  type        = string
+  default     = null
+}
+
+variable "subscription_id_hub" {
   description = "The Azure Subscription ID where the hub resources are deployed."
   type        = string
 }

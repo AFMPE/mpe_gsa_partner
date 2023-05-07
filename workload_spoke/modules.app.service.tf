@@ -41,20 +41,23 @@ module "mod_app_service" {
   environment                  = var.required.environment
   workload_name                = each.value.workload_name
 
-  app_service_environment      = module.mod_app_service_environment.ase_name
-  enable_private_endpoint      = each.value.enable_private_endpoint
-  existing_private_dns_zone    = each.value.existing_private_dns_zone
-  app_service_name             = each.value.app_service_name
-  virtual_network_name         = module.mod_workload_network.virtual_network_name
-  app_service_plan_sku_name    = each.value.app_service_plan_sku_name
-  create_app_service_plan      = each.value.create_app_service_plan
-  health_check_path            = each.value.health_check_path
-  application_stack            = each.value.application_stack
-  dotnet_version               = each.value.dotnet_version
-  private_endpoint_subnet_name = each.value.private_endpoint_subnet_name
-  deployment_slot_count        = each.value.deployment_slot_count
-  app_service_resource_type    = each.value.app_service_resource_type
-  app_service_plan_os_type     = each.value.app_service_plan_os_type
+  app_service_environment          = module.mod_app_service_environment.ase_name
+  enable_private_endpoint          = each.value.enable_private_endpoint
+  existing_private_dns_zone        = each.value.existing_private_dns_zone
+  app_service_name                 = each.value.app_service_name
+  virtual_network_name             = module.mod_workload_network.virtual_network_name  
+  private_endpoint_subnet_name     = each.value.private_endpoint_subnet_name
+  app_service_plan_sku_name        = each.value.app_service_plan_sku_name
+  create_app_service_plan          = each.value.create_app_service_plan
+  deployment_slot_count            = each.value.deployment_slot_count
+  app_service_plan_os_type         = each.value.app_service_plan_os_type
+  app_service_resource_type        = each.value.app_service_resource_type
+  windows_app_site_config          = each.value.app_service_plan_os_type == "Windows" && each.value.app_service_resource_type == "App" ? each.value.site_config : null
+  windows_function_app_site_config = each.value.app_service_plan_os_type == "Windows" && each.value.app_service_resource_type == "FunctionApp" ? each.value.site_config : null
+  linux_app_site_config            = each.value.app_service_plan_os_type == "Linux" && each.value.app_service_resource_type == "App" ? each.value.site_config : null
+  linux_function_app_site_config   = each.value.app_service_plan_os_type == "Linux" && each.value.app_service_resource_type == "FunctionApp" ? each.value.site_config : null
+  website_run_from_package         = each.value.website_run_from_package
+  app_service_plan_worker_count    = each.value.app_service_plan_worker_count
 
   # Tags
   add_tags = var.default_tags # Tags to be applied to all resources
