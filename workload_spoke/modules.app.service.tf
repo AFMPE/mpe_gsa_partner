@@ -45,10 +45,11 @@ module "mod_app_service" {
   enable_private_endpoint          = each.value.enable_private_endpoint
   existing_private_dns_zone        = each.value.existing_private_dns_zone
   app_service_name                 = each.value.app_service_name
-  virtual_network_name             = module.mod_workload_network.virtual_network_name  
+  virtual_network_name             = module.mod_workload_network.virtual_network_name
   private_endpoint_subnet_name     = each.value.private_endpoint_subnet_name
   app_service_plan_sku_name        = each.value.app_service_plan_sku_name
   create_app_service_plan          = each.value.create_app_service_plan
+  create_app_container_registry    = each.value.create_app_container_registry != null ? each.value.create_app_container_registry : false
   deployment_slot_count            = each.value.deployment_slot_count
   app_service_plan_os_type         = each.value.app_service_plan_os_type
   app_service_resource_type        = each.value.app_service_resource_type

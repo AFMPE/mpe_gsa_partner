@@ -253,8 +253,7 @@ app_service_apps = {
     }
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
-    create_app_container_registry = true
-    acr_sku                       = "Premium"
+    create_app_container_registry = true    
   },
   "high-throughput-api-subsystem" = {
     workload_name                = "htas"
