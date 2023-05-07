@@ -240,7 +240,7 @@ app_service_apps = {
       application_stack = {
         docker_image     = "directus/directus"
         docker_image_tag = "9.23.1"
-        dotnet_version = "6.0"
+        dotnet_version   = "6.0"
       }
       container_registry_use_managed_identity = true
       health_check_path                       = "/server/health"
@@ -253,7 +253,7 @@ app_service_apps = {
     }
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
-    create_app_container_registry = true    
+    create_app_container_registry = true
   },
   "high-throughput-api-subsystem" = {
     workload_name                = "htas"

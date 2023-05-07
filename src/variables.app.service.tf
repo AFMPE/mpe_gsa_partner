@@ -20,7 +20,7 @@ variable "app_service_apps" {
     app_service_plan_sku_name    = string
     enable_private_endpoint      = optional(bool)
     existing_private_dns_zone    = optional(string)
-    create_app_service_plan      = bool    
+    create_app_service_plan      = bool
     private_endpoint_subnet_name = string
     deployment_slot_count        = number
     app_service_resource_type    = string
