@@ -16,8 +16,34 @@ variable "default_tags" {
   default     = {}
 }
 
-variable "subscription_id" {
+variable "subscription_id_partners_gsa_dev" {
   description = "The Azure Subscription ID where the resources in this module should be deployed."
+  type        = string
+}
+
+variable "subscription_id_partners_gsa_prod" {
+  description = "The Azure Subscription ID where the resources in this module should be deployed."
+  type        = string
+  default     = null
+}
+
+variable "subscription_id_hub" {
+  description = "The Azure Subscription ID where the hub resources are deployed."
+  type        = string
+}
+
+variable "hub_rg_name" {
+  description = "The name of the resource group in which the hub resources are deployed."
+  type        = string
+}
+
+variable "hub_vnet_name" {
+  description = "The name of the hub virtual network."
+  type        = string
+}
+
+variable "hub_fw_name" {
+  description = "The name of the hub firewall."
   type        = string
 }
 
@@ -31,6 +57,12 @@ variable "backend_key" {
   description = "The key to use for the backend state."
   type        = string
   default     = null
+}
+
+variable "disable_telemetry" {
+  description = "If set to true, will disable the telemetry sent as part of the module."
+  type        = string
+  default     = false
 }
 
 #################################
@@ -47,27 +79,6 @@ variable "lock_level" {
   description = "The level of lock to apply to the resources. Valid values are CanNotDelete, ReadOnly, or NotSpecified."
   type        = string
   default     = "CanNotDelete"
-}
-
-#################################
-# Remote State Configuration
-#################################
-
-## This is required for retrieving state
-variable "state_sa_name" {
-  type        = string
-  description = "The name of the storage account to use for storing the Terraform state."
-}
-
-variable "state_sa_container_name" {
-  type        = string
-  description = "The name of the container to use for storing the Terraform state."
-}
-
-# Storage Account Resource Group
-variable "state_sa_rg" {
-  type        = string
-  description = "The name of the resource group in which the storage account is located."
 }
 
 

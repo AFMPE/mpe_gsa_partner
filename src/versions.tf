@@ -27,7 +27,7 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
+  subscription_id = coalesce(var.subscription_id_partners_gsa_dev, var.subscription_id_partners_gsa_prod)
 
   features {
     log_analytics_workspace {
@@ -40,4 +40,10 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = var.provider_azurerm_features_resource_group.prevent_deletion_if_contains_resources # When that feature flag is set to true, this is required to stop the deletion of the resource group when the deployment is destroyed. This is required if the resource group contains resources that are not managed by Terraform.
     }
   }
+}
+
+provider "azurerm" {
+  alias           = "hub_network"
+  subscription_id = var.subscription_id_hub
+  features {}
 }

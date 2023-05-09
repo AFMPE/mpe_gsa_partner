@@ -1,18 +1,23 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
-# Single Database
+/*
+SUMMARY: Module to deploy Azure SQL in Azure Partner Landing Zone
+DESCRIPTION: The following components will be options in this deployment
+             * SQL Server             
+AUTHOR/S: jspinella
+*/
+
 module "mod_gsa_sql" {
-  depends_on = [
-    module.mod_workload_network
-  ]
   source  = "azurenoops/overlays-azsql/azurerm"
-  version = "~> 0.2.3"
+  version = ">= 0.2.4"
 
   # By default, this module will create a resource group and 
   # provide a name for an existing resource group. If you wish 
   # to use an existing resource group, change the option 
   # to "create_sql_resource_group = false." The location of the group 
   # will remain the same if you use the current resource.
-  existing_resource_group_name = "ampe-gsa-eus-dev-rg"
+  existing_resource_group_name = module.mod_workload_network.resource_group_name
   location                     = module.mod_azure_region_lookup.location_cli
   deploy_environment           = var.required.deploy_environment
   org_name                     = var.required.org_name
@@ -24,8 +29,8 @@ module "mod_gsa_sql" {
   # The password must be at least 8 characters long and contain
   # characters from three of the following categories: English uppercase letters,
   # English lowercase letters, numbers (0-9), and non-alphanumeric characters (!, $, #, %, etc.).
-  administrator_login = var.sql_admin_login
-
+  administrator_login    = var.sql_admin_login
+  administrator_password = var.sql_admin_password
   # SQL server extended auditing policy defaults to `true`. 
   # To turn off set enable_sql_server_extended_auditing_policy to `false`  
   # DB extended auditing policy defaults to `false`. 
@@ -58,7 +63,7 @@ module "mod_gsa_sql" {
   # To use existing private DNS zone specify `existing_private_dns_zone` with valid zone name
   enable_private_endpoint = var.enable_private_endpoint
   existing_vnet_id        = module.mod_workload_network.virtual_network_id
-  existing_subnet_id      = "/subscriptions/65798e1e-c177-4373-ac3b-921f11f737c8/resourceGroups/ampe-eus-gsa-dev-rg/providers/Microsoft.Network/virtualNetworks/ampe-eus-gsa-dev-vnet/subnets/ampe-eastus-gsa-pe-snet"
+  existing_subnet_id      = "/subscriptions/65798e1e-c177-4373-ac3b-921f11f737c8/resourceGroups/ampe-gsa-eus-dev-rg/providers/Microsoft.Network/virtualNetworks/ampe-gsa-eus-dev-vnet/subnets/ampe-gsa-eastus-pe-snet"
 
   # AD administrator for an Azure SQL server
   # Allows you to set a user or group as the AD administrator for an Azure SQL server
