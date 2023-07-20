@@ -10,36 +10,6 @@ permissions:
   pull-requests: write
 
 jobs:
-  apply_plan_dev:
-    runs-on: ubuntu-latest
-    name: Apply a plan for an MPE Dev Partner Workload Spoke terraform configuration
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_PARTNER_GSA_PROD_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      ARM_ENVIRONMENT: "public"
-    environment:
-        name: Dev
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: MPE Dev Workload Spoke terraform apply
-        uses: azurenoops/terraform-github-actions/terraform-apply@v1.34.2
-        with:
-          path: src
-          variables: |
-            subscription_id_hub               = "${{ secrets.ARM_HUB_SUBSCRIPTION_ID }}"
-            subscription_id_partners_gsa_prod = "${{ secrets.AZURE_PARTNER_GSA_PROD_SUBSCRIPTION_ID }}"           
-          var_file: |
-            tfvars/parameters.gsa.tfvars
-          backend_config: |
-            storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-            container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}            
-            resource_group_name=${{ secrets.TFSTATE_RG }}
-
   apply_plan_prod:
     runs-on: ubuntu-latest
     name: Apply a plan for an MPE Prod Partner Workload Spoke terraform configuration
@@ -56,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: MPE Dev Workload Spoke terraform apply
+      - name: MPE Prod Workload Spoke terraform apply
         uses: azurenoops/terraform-github-actions/terraform-apply@v1.34.2
         with:
           path: src
@@ -69,3 +39,4 @@ jobs:
             storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
             container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}            
             resource_group_name=${{ secrets.TFSTATE_RG }}
+
