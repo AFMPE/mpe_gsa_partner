@@ -11,7 +11,7 @@ variable "org_name" {
 variable "environment" {
   type        = string
   description = "This variable defines the environment to be built"
-  default     = "dev"
+  default     = "prod"
 }
 # Azure region
 variable "location" {
@@ -23,5 +23,6 @@ variable "location" {
 variable "subscription_id" {
   type        = string
   description = "Azure subscription ID"
-  default     = "65798e1e-c177-4373-ac3b-921f11f737c8"
+  default     = "<<subid>>"
+  sensitive   = true
 }
