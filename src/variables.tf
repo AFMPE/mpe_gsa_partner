@@ -50,6 +50,21 @@ variable "hub_fw_name" {
   type        = string
 }
 
+variable "hub_log_rg_name" {
+  description = "The name of the resource group in which the hub log analytics is deployed."
+  type        = string
+}
+  
+variable "hub_log_name" {
+  description = "The name of the hub log analytics."
+  type        = string
+}
+
+variable "hub_log_st_name" {
+  description = "The name of the hub storage account."
+  type        = string
+}
+
 variable "location" {
   type        = string
   description = "If specified, will set the Azure region in which region bound resources will be deployed. Please see: https://azure.microsoft.com/en-gb/global-infrastructure/geographies/"

@@ -41,6 +41,7 @@ jobs:
   apply_plan_dev:
     runs-on: ubuntu-latest
     name: Create a plan for an MPE Partner terraform configuration
+    needs: plan_dev
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}

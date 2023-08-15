@@ -5,33 +5,78 @@
 ## Bastion Jumpbox Configuration  ###
 #####################################
 
-variable "virtual_machine_admins" {
-  description = "Optional list of Azure Active Directory object IDs to assign the Virtual Machine Administrator Login role."
-  type        = list(string)
-  default     = []
-}
-
-variable "virtual_machine_users" {
-  description = "List of Azure Active Directory object IDs to assign the Virtual Machine User Login role."
-  type        = list(string)
-  default     = []
-}
-
-variable "bastion_vm_size" {
-  description = "The size of the virtual machine to deploy for the bastion host."
+variable "windows_distribution_name" {
+  description = "The name of the Windows distribution to use for the Bastion VM."
   type        = string
-  default     = "Standard_F2"
+  default     = "windows2019dc"
 }
 
-variable "bastion_admin_username" {
-  description = "The admin username to use for the bastion host."
+variable "virtual_machine_size" {
+  description = "The size of the Bastion VM."
   type        = string
-  default     = "mpeadminuser"
+  default     = "Standard_B2s"
 }
 
-variable "bastion_admin_password" {
-  description = "The admin password to use for the bastion host."
+variable "vm_admin_username" {
+  description = "The name of the administrator account for the Bastion VM."
   type        = string
-  default     = "Password1234!"
-  sensitive   = true
+  default     = "mpeazureadmin"
 }
+
+variable "vm_admin_password" {
+  description = "The password for the administrator account for the Bastion VM."
+  type        = string
+}
+
+variable "instances_count" {
+  description = "The number of Bastion VM instances to deploy."
+  type        = number
+  default     = 1
+}
+
+variable "enable_proximity_placement_group" {
+  description = "If set to true, will deploy a proximity placement group for the Bastion VM. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "enable_vm_availability_set" {
+  description = "If set to true, will deploy an availability set for the Bastion VM. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "enable_public_ip_address" {
+  description = "If set to true, will deploy a public IP address for the Bastion VM. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "existing_network_security_group_name" {
+  description = "The name of an existing network security group to associate with the Bastion VM."
+  type        = string
+  default     = null
+}
+  
+variable "nsg_inbound_rules" {
+  description = "A list of inbound rules to associate with the network security group."  
+  default = []
+}
+
+variable "enable_boot_diagnostics" {
+  description = "If set to true, will enable boot diagnostics for the Bastion VM. Default is false."
+  type        = bool
+  default     = false
+}
+
+variable "data_disks" {
+  description = "A list of data disks to attach to the Bastion VM."
+  default = []
+}
+
+variable "deploy_log_analytics_agent" {
+  description = "If set to true, will deploy the Log Analytics agent to the Bastion VM. Default is false."
+  type        = bool
+  default     = false
+}
+

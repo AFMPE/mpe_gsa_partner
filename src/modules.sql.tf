@@ -12,6 +12,8 @@ module "mod_gsa_sql" {
   source  = "azurenoops/overlays-azsql/azurerm"
   version = ">= 0.2.4"
 
+  depends_on = [module.mod_workload_network]
+
   # By default, this module will create a resource group and 
   # provide a name for an existing resource group. If you wish 
   # to use an existing resource group, change the option 
@@ -22,7 +24,7 @@ module "mod_gsa_sql" {
   deploy_environment           = var.required.deploy_environment
   org_name                     = var.required.org_name
   environment                  = var.required.environment
-  workload_name                = "gsa"
+  workload_name                = var.wl_name
 
   # The admin of the SQL Server. If you do not provide a password,
   # the module will generate a password for you.
@@ -61,9 +63,9 @@ module "mod_gsa_sql" {
   # Creating Private Endpoint requires, VNet name and address prefix to create a subnet
   # By default this will create a `privatelink.sql.io` DNS zone. 
   # To use existing private DNS zone specify `existing_private_dns_zone` with valid zone name
-  enable_private_endpoint = var.enable_private_endpoint
-  existing_vnet_id        = module.mod_workload_network.virtual_network_id
-  existing_subnet_id      = "/subscriptions/65798e1e-c177-4373-ac3b-921f11f737c8/resourceGroups/ampe-gsa-eus-dev-rg/providers/Microsoft.Network/virtualNetworks/ampe-gsa-eus-dev-vnet/subnets/ampe-gsa-eastus-pe-snet"
+  enable_private_endpoint      = var.enable_private_endpoint
+  virtual_network_name         = module.mod_workload_network.virtual_network_name
+  existing_private_subnet_name = "ampe-eus-gsa-dev-pe-snet"
 
   # AD administrator for an Azure SQL server
   # Allows you to set a user or group as the AD administrator for an Azure SQL server

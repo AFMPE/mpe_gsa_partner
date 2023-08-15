@@ -10,10 +10,9 @@
 ###########################
 
 required = {
-  org_name           = "ampe-gsa"             # This Prefix will be used on most deployed resources.  10 Characters max.
-  deploy_environment = "dev"                  # dev | test | prod
-  environment        = "public"               # public | usgovernment
-  metadata_host      = "management.azure.com" # management.azure.com | management.usgovcloudapi.net
+  org_name           = "ampe"   # This Prefix will be used on most deployed resources.  10 Characters max.
+  deploy_environment = "dev"    # dev | test | prod
+  environment        = "public" # public | usgovernment
 }
 
 # The default region to deploy to
@@ -23,27 +22,61 @@ location = "eastus"
 enable_resource_locks = false
 
 # Hub Subscription Information
-hub_rg_name   = "ampe-eus-hub-core-prod-rg"
-hub_vnet_name = "ampe-eus-hub-core-prod-vnet"
-hub_fw_name   = "ampe-eus-hub-core-prod-fw"
+hub_rg_name     = "ampe-eus-hub-core-prod-rg"
+hub_log_rg_name = "ampe-eus-ops-logging-core-prod-rg"
+hub_vnet_name   = "ampe-eus-hub-core-prod-vnet"
+hub_fw_name     = "ampe-eus-hub-core-prod-fw"
+hub_log_name    = "ampe-eus-ops-logging-core-prod-log"
+hub_log_st_name = "ampeeus264794eccaafa2f0"
 
 ###############################
 # Workload Virtual Network  ###
 ###############################
 
-deployed_to_hub_subscription = false
-deny_all_inbound             = false
+# The name of the workload for the spoke
+wl_name = "gsa"
 
-wl_vnet_address_space           = ["10.0.124.0/23"]
-wl_vnet_subnet_address_prefixes = ["10.0.125.0/27"]
-wl_vnet_subnet_service_endpoints = [
-  "Microsoft.KeyVault",
-  "Microsoft.Sql",
-  "Microsoft.Storage",
-]
+# Is the spoke deployed to a hub subscription
+deployed_to_hub_subscription = false
+
+# Vnet Address Space
+wl_vnet_address_space = ["10.0.124.0/23"]
 
 wl_vnet_subnets = {
-  "apim_snet" = {
+  "default" = {
+    name             = "default"
+    address_prefixes = ["10.0.125.0/27"]
+    service_endpoints = [
+      "Microsoft.Storage",
+    ]
+    private_endpoint_network_policies_enabled  = true
+    private_endpoint_service_endpoints_enabled = false
+
+    nsg_subnet_rules = [
+      {
+        name                       = "Allow-Traffic-From-Spokes",
+        description                = "Allow traffic from Spokes",
+        priority                   = 200,
+        direction                  = "Inbound",
+        access                     = "Allow",
+        protocol                   = "*",
+        source_port_range          = "*",
+        destination_port_ranges    = ["22", "80", "443", "3389"],
+        source_address_prefixes    = ["10.0.120.0/26", "10.0.115.0/26", "10.0.100.0/24"],
+        destination_address_prefix = "10.0.124.0/23"
+      }
+    ]
+  },
+  "vm" = {
+    name             = "vm"
+    address_prefixes = ["10.0.125.96/27"]
+    service_endpoints = [
+      "Microsoft.Storage",
+    ]
+    private_endpoint_network_policies_enabled  = true
+    private_endpoint_service_endpoints_enabled = false
+  },
+  "apim" = {
     name             = "apim"
     address_prefixes = ["10.0.125.32/27"]
     service_endpoints = [
@@ -55,8 +88,8 @@ wl_vnet_subnets = {
     ]
     private_endpoint_network_policies_enabled  = true
     private_endpoint_service_endpoints_enabled = false
-  }
-  "pe_snet" = {
+  },
+  "pe" = {
     name             = "pe"
     address_prefixes = ["10.0.125.64/27"]
     service_endpoints = [
@@ -66,8 +99,9 @@ wl_vnet_subnets = {
     ]
     private_endpoint_network_policies_enabled  = true
     private_endpoint_service_endpoints_enabled = false
-  }
-  "app_snet" = {
+
+  },
+  "app" = {
     name             = "app"
     address_prefixes = ["10.0.124.0/24"]
     service_endpoints = [
@@ -82,9 +116,11 @@ wl_vnet_subnets = {
     delegation = {
       name = "app_service_delegation"
       service_delegation = {
-        service_delegation_name = "Microsoft.Web/hostingEnvironments"
+        name    = "Microsoft.Web/hostingEnvironments"
+        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
       }
     }
+
   }
 }
 
@@ -115,38 +151,62 @@ wl_route_table_routes = {
   }
 }
 
-wl_nsg_rules = [
-  {
-    name                       = "Allow-Traffic-From-Spokes"
-    priority                   = 200
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_ranges    = ["22", "80", "443", "3389"]
-    source_address_prefixes    = ["10.0.120.0/26", "10.0.115.0/26", "10.0.100.0/24"]
-    destination_address_prefix = "10.0.125.0/24"
-  },
-]
-
 
 #############################
 ## Peering Configuration  ###
 #############################
 
-allow_virtual_spoke_network_access = true
-allow_forwarded_spoke_traffic      = true
-allow_gateway_spoke_transit        = true
-use_remote_spoke_gateway           = false
+use_source_remote_spoke_gateway = false
 
 #####################################
 ## Bastion Jumpbox Configuration  ###
 #####################################
 
-virtual_machine_admins = []
-virtual_machine_users  = []
-bastion_vm_size        = "Standard_D2s_v3"
-bastion_admin_username = "mpeadminuser"
+# Bastion VM Configuration
+windows_distribution_name = "windows2019dc"
+virtual_machine_size      = "Standard_B1s"
+
+# This module support multiple Pre-Defined windows and Windows Distributions.
+# Check the README.md file for more pre-defined images for Ubuntu, Centos, RedHat.
+# Please make sure to use gen2 images supported VM sizes if you use gen2 distributions
+# Specify `disable_password_authentication = false` to create random admin password
+# Specify a valid password with `admin_password` argument to use your own password .  
+vm_admin_username = "mpeazureuser"
+instances_count   = 1
+
+# Network Seurity group port definitions for each Virtual Machine 
+# NSG association for all network interfaces to be added automatically.
+nsg_inbound_rules = [
+  {
+    name                   = "RDC"
+    destination_port_range = "3376"
+    source_address_prefix  = "*"
+  },
+]
+
+# Attach a managed data disk to a Windows/windows virtual machine. 
+# Storage account types include: #'Standard_LRS', #'StandardSSD_ZRS', #'Premium_LRS', #'Premium_ZRS', #'StandardSSD_LRS', #'UltraSSD_LRS' (UltraSSD_LRS is only accessible in regions that support availability zones).
+# Create a new data drive - connect to the VM and execute diskmanagemnet or fdisk.
+data_disks = [
+  {
+    name                 = "disk1"
+    disk_size_gb         = 100
+    storage_account_type = "StandardSSD_LRS"
+  },
+  {
+    name                 = "disk2"
+    disk_size_gb         = 200
+    storage_account_type = "Standard_LRS"
+  }
+]
+
+# Deploy log analytics agents on a virtual machine. 
+# Customer id and primary shared key for Log Analytics workspace are required.
+deploy_log_analytics_agent       = true
+enable_proximity_placement_group = false
+enable_vm_availability_set       = false
+enable_public_ip_address         = false
+enable_boot_diagnostics          = false
 
 #########################
 ## SQL Configuration  ###
@@ -176,19 +236,15 @@ publisher_email                = "gsa_admins@missionpartners.us"
 publisher_name                 = "afmpe-gsa"
 sku_tier                       = "Developer"
 sku_capacity                   = 1
-enable_redis_cache             = true
 enable_user_identity           = true
-enable_app_insights            = true
-virtual_network_type           = "Internal"
-apim_subnet_name               = "ampe-gsa-eastus-apim-snet"
-private_endpoint_subnet_name   = "ampe-gsa-eastus-pe-snet"
-private_endpoint_subnet_prefix = ["10.0.125.64/27"]
+apim_subnet_name               = "ampe-eus-gsa-dev-apim-snet"
+private_endpoint_subnet_name   = "ampe-eus-gsa-dev-pe-snet"
 
 ###############################
 ## Azure App Service Env  ###
 ###############################
 
-ase_subnet_name = "ampe-gsa-eastus-app-snet"
+ase_subnet_name = "ampe-eus-gsa-dev-app-snet"
 
 #########################
 ## Azure App Service  ###
@@ -196,16 +252,21 @@ ase_subnet_name = "ampe-gsa-eastus-app-snet"
 
 app_service_apps = {
   "access-decision-service-subsystem" = {
-    workload_name                = "adss"
-    app_service_name             = "access-decision-service-subsystem"
-    app_service_plan_sku_name    = "I1v2"
-    enable_private_endpoint      = true
-    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
-    create_app_service_plan      = true
-    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
-    deployment_slot_count        = 1
-    app_service_resource_type    = "App"
-    app_service_plan_os_type     = "Windows"
+    # App Service Configuration
+    workload_name                 = "adss"
+    create_app_service_plan       = true
+    app_service_name              = "access-decision-service-subsystem"
+    app_service_plan_sku_name     = "I1v2"
+    app_service_resource_type     = "App"
+    app_service_plan_os_type      = "Windows"
+    deployment_slot_count         = 1
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+
+    # Key Vault Configuration
+    create_app_keyvault = true
+
+    # App Service Site Configuration
     site_config = {
       always_on = true
       application_stack = {
@@ -221,20 +282,27 @@ app_service_apps = {
       remote_debugging_enabled = true
       websockets_enabled       = false
     }
-    website_run_from_package      = "1"
-    app_service_plan_worker_count = 1
   },
   "directus-subsystem" = {
-    workload_name                = "dus"
-    app_service_name             = "directus-subsystem"
-    app_service_plan_sku_name    = "I1v2"
-    enable_private_endpoint      = true
-    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
-    create_app_service_plan      = true
-    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
-    deployment_slot_count        = 2
-    app_service_resource_type    = "App"
-    app_service_plan_os_type     = "Linux"
+    # App Service Configuration
+    workload_name                 = "dus"
+    create_app_service_plan       = true
+    app_service_name              = "directus-subsystem"
+    app_service_plan_sku_name     = "I1v2"
+    app_service_resource_type     = "App"
+    app_service_plan_os_type      = "Linux"
+    deployment_slot_count         = 2
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+
+    # ACR Configuration
+    create_app_container_registry = true
+    enable_acr_private_endpoint   = true
+
+    # Key Vault Configuration
+    create_app_keyvault = true
+
+    # App Service Site Configuration
     site_config = {
       always_on = true
       application_stack = {
@@ -251,21 +319,23 @@ app_service_apps = {
       remote_debugging_enabled                = true
       websockets_enabled                      = false
     }
-    website_run_from_package      = "1"
-    app_service_plan_worker_count = 1
-    create_app_container_registry = true
   },
   "high-throughput-api-subsystem" = {
-    workload_name                = "htas"
-    app_service_name             = "high-throughput-api-subsystem"
-    app_service_plan_sku_name    = "I1v2"
-    enable_private_endpoint      = true
-    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
-    create_app_service_plan      = true
-    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
-    deployment_slot_count        = 1
-    app_service_resource_type    = "FunctionApp"
-    app_service_plan_os_type     = "Windows"
+    # App Service Configuration
+    workload_name                 = "htas"
+    create_app_service_plan       = true
+    app_service_name              = "high-throughput-api-subsystem"
+    app_service_plan_sku_name     = "I1v2"
+    app_service_resource_type     = "FunctionApp"
+    app_service_plan_os_type      = "Windows"
+    deployment_slot_count         = 1
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+
+    # Key Vault Configuration
+    create_app_keyvault = true
+
+    # App Service Site Configuration
     site_config = {
       always_on = true
       application_stack = {
@@ -280,20 +350,23 @@ app_service_apps = {
       remote_debugging_enabled = true
       websockets_enabled       = false
     }
-    website_run_from_package      = "1"
-    app_service_plan_worker_count = 1
   },
   "symbology-api-subsystem" = {
-    workload_name                = "symas"
-    app_service_name             = "symbology-api-subsystem"
-    app_service_plan_sku_name    = "I1v2"
-    enable_private_endpoint      = true
-    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
-    create_app_service_plan      = true
-    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
-    deployment_slot_count        = 2
-    app_service_resource_type    = "FunctionApp"
-    app_service_plan_os_type     = "Windows"
+    # App Service Configuration
+    workload_name                 = "symas"
+    create_app_service_plan       = true
+    app_service_name              = "symbology-api-subsystem"
+    app_service_plan_sku_name     = "I1v2"
+    app_service_resource_type     = "FunctionApp"
+    app_service_plan_os_type      = "Windows"
+    deployment_slot_count         = 2
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+
+    # Key Vault Configuration
+    create_app_keyvault = true
+
+    # App Service Site Configuration
     site_config = {
       always_on = true
       application_stack = {
@@ -308,26 +381,27 @@ app_service_apps = {
       remote_debugging_enabled = true
       websockets_enabled       = false
     }
-    website_run_from_package      = "1"
-    app_service_plan_worker_count = 1
   },
   "timer-subsystem" = {
-    workload_name                = "ts"
-    app_service_name             = "timer-subsystem"
-    app_service_plan_sku_name    = "I1v2"
-    enable_private_endpoint      = true
-    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
-    create_app_service_plan      = true
-    create_app_service_plan      = true
-    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
-    virtual_network_name         = "ampe-gsa-eus-dev-vnet"
-    deployment_slot_count        = 2
-    app_service_resource_type    = "FunctionApp"
-    app_service_plan_os_type     = "Windows"
+    # App Service Configuration
+    workload_name                 = "ts"
+    create_app_service_plan       = true
+    app_service_name              = "timer-subsystem"
+    app_service_plan_sku_name     = "I1v2"
+    app_service_resource_type     = "FunctionApp"
+    app_service_plan_os_type      = "Windows"
+    deployment_slot_count         = 2
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+
+    # Key Vault Configuration
+    create_app_keyvault = true
+
+    # App Service Site Configuration
     site_config = {
       always_on = true
       application_stack = {
-        dotnet_version = "v6.0"
+        dotnet_version = "6.0"
       }
       use_32_bit_worker        = false
       health_check_path        = "/health"
@@ -338,21 +412,24 @@ app_service_apps = {
       remote_debugging_enabled = true
       websockets_enabled       = false
     }
-    website_run_from_package      = "1"
-    app_service_plan_worker_count = 1
+
   },
   "web-client-subsystem" = {
-    workload_name                = "wcs"
-    app_service_name             = "web-client-subsystem"
-    app_service_plan_sku_name    = "I1v2"
-    enable_private_endpoint      = true
-    existing_private_dns_zone    = "privatelink.vaultcore.azure.net"
-    create_app_service_plan      = true
-    private_endpoint_subnet_name = "ampe-gsa-eastus-pe-snet"
-    virtual_network_name         = "ampe-gsa-eus-dev-vnet"
-    deployment_slot_count        = 2
-    app_service_resource_type    = "App"
-    app_service_plan_os_type     = "Windows"
+    # App Service Configuration
+    workload_name                 = "wcs"
+    create_app_service_plan       = true
+    app_service_name              = "web-client-subsystem"
+    app_service_plan_sku_name     = "I1v2"
+    app_service_resource_type     = "App"
+    app_service_plan_os_type      = "Windows"
+    deployment_slot_count         = 2
+    website_run_from_package      = "1"
+    app_service_plan_worker_count = 1
+
+    # Key Vault Configuration
+    create_app_keyvault = true
+
+    # App Service Site Configuration
     site_config = {
       always_on = true
       application_stack = {
@@ -368,8 +445,7 @@ app_service_apps = {
       remote_debugging_enabled = true
       websockets_enabled       = false
     }
-    website_run_from_package      = "1"
-    app_service_plan_worker_count = 1
+
   },
 }
 

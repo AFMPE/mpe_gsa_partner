@@ -21,58 +21,64 @@ AUTHOR/S: jspinella
 
 // Resources for the Operations Spoke
 module "mod_workload_network" {
-  source  = "azurenoops/overlays-hubspoke/azurerm//modules/virtual-network-spoke"
-  version = ">= 1.0.0"
+  source  = "azurenoops/overlays-workload-spoke/azurerm"
+  version = "~> 3.0"
 
   #####################################
   ## Global Settings Configuration  ###
   #####################################
 
-  location           = module.mod_azure_region_lookup.location_cli
-  deploy_environment = var.required.deploy_environment
-  org_name           = var.required.org_name
-  environment        = var.required.environment
-  workload_name      = var.wl_name
+  create_resource_group = true
+  location              = module.mod_azure_region_lookup.location_cli
+  deploy_environment    = var.required.deploy_environment
+  org_name              = var.required.org_name
+  environment           = var.required.environment
+  workload_name         = var.wl_name
+
+  # Collect Spoke Virtual Network Parameters
+  # Spoke network details to create peering and other setup
+  hub_virtual_network_id          = data.azurerm_virtual_network.hub_vnet.id
+  hub_firewall_private_ip_address = data.azurerm_firewall.hub_fw.ip_configuration.0.private_ip_address
+  hub_storage_account_id          = data.azurerm_storage_account.hub_st.id
+
+  # (Required) To enable Azure Monitoring and flow logs
+  # pick the values for log analytics workspace which created by Spoke module
+  # Possible values range between 30 and 730
+  log_analytics_workspace_id           = data.azurerm_log_analytics_workspace.hub_log.id
+  log_analytics_customer_id            = data.azurerm_log_analytics_workspace.hub_log.workspace_id
+  log_analytics_logs_retention_in_days = 30
 
   ##################################################
-  ## Operations Spoke Configuration   (Default)  ###
+  ## GSA Spoke Configuration   (Default)  ###
   ##################################################
 
-  # Indicates if the spoke is deployed to the same subscription as the hub. Default is true.
+  # Provide valid VNet Address space for spoke virtual network.    
+  virtual_network_address_space = var.wl_vnet_address_space # (Required)  Spoke Virtual Network Parameters
+
+  # (Required) Specify if you are deploying the spoke VNet using the same hub Azure subscription
   is_spoke_deployed_to_same_hub_subscription = var.deployed_to_hub_subscription
 
-  # Provide valid VNet Address space for spoke virtual network.  
-  virtual_network_address_space = var.wl_vnet_address_space
+  # (Required) Multiple Subnets, Service delegation, Service Endpoints, Network security groups
+  # These are default subnets with required configuration, check README.md for more details
+  # Route_table and NSG association to be added automatically for all subnets listed here.
+  # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
+  spoke_subnets = var.wl_vnet_subnets
 
-  # Provide valid subnet address prefix for spoke virtual network. Subnet naming is based on default naming standard
-  spoke_subnet_address_prefix                         = var.wl_vnet_subnet_address_prefixes
-  spoke_subnet_service_endpoints                      = var.wl_vnet_subnet_service_endpoints
-  spoke_private_endpoint_network_policies_enabled     = false
-  spoke_private_link_service_network_policies_enabled = true
+  # Enable Flow Logs
+  # By default, this will enable flow logs for all subnets.
+  enable_traffic_analytics = var.enable_traffic_analytics
 
-  # Provide additional subnets to be added to the spoke virtual network
-  add_subnets = var.wl_vnet_subnets
-
-  # Hub Virtual Network ID
-  hub_virtual_network_id = data.azurerm_virtual_network.hub_vnet.id
-  #"/subscriptions/7eb60145-02f2-4fc1-80d2-e25d2ce9e45d/resourceGroups/ampe-eus-hub-core-prod-rg/providers/Microsoft.Network/virtualNetworks/ampe-eus-hub-core-prod-vnet" #data.terraform_remote_state.mpe_landing_zone.outputs.hub_virtual_network_id
-
-  # Firewall Private IP Address 
-  hub_firewall_private_ip_address = data.azurerm_firewall.hub_fw.ip_configuration.0.private_ip_address
-  #"10.0.100.4" #data.terraform_remote_state.mpe_landing_zone.outputs.firewall_private_ip
-
-  # (Optional) Operations Network Security Group
-  # This is default values, do not need this if keeping default values
-  # NSG rules are not created by default for Azure NoOps Hub Subnet
-
-  # To deactivate default deny all rule
-  deny_all_inbound = var.deny_all_inbound
-
-  # Network Security Group Rules to apply to the Operatioms Virtual Network
-  nsg_additional_rules = var.wl_nsg_rules
-
-  # Enable forced tunneling on the route table
+  # By default, forced tunneling is enabled for the spoke.
+  # If you do not want to enable forced tunneling on the spoke route table, 
+  # set `enable_forced_tunneling = false`.
   enable_forced_tunneling_on_route_table = var.enable_forced_tunneling_on_route_table
+
+  # Private DNS Zone Settings
+  # By default, Azure NoOps will create Private DNS Zones for Logging in Hub VNet.
+  # If you do want to create addtional Private DNS Zones, 
+  # add in the list of private_dns_zones to be created.
+  # else, remove the private_dns_zones argument.
+  private_dns_zones = var.wl_private_dns_zones
 
   # Add additional routes to the route table
   route_table_routes = var.wl_route_table_routes
@@ -81,10 +87,10 @@ module "mod_workload_network" {
   ## Peering Configuration  ###
   #############################
 
-  allow_virtual_spoke_network_access = var.allow_virtual_spoke_network_access
-  allow_forwarded_spoke_traffic      = var.allow_forwarded_spoke_traffic
-  allow_gateway_spoke_transit        = var.allow_gateway_spoke_transit
-  use_remote_spoke_gateway           = var.use_remote_spoke_gateway
+  # Peering
+  # By default, Azure NoOps will create peering between Hub and Spoke.
+  # Since is using a gateway, set the argument to `use_source_remote_spoke_gateway = true`, to enable gateway traffic.   
+  use_source_remote_spoke_gateway = var.use_source_remote_spoke_gateway
 
   #############################
   ## Misc Configuration     ###

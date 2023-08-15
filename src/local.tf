@@ -22,7 +22,7 @@ locals {
 # The following locals identify the module
 locals {
   # PUID identifies the module
-  telem_workload_puid = "434fc92b-dbc0-4770-8642-f611851881bd5"
+  telem_workload_puid = "434fc92b-dbc0-4770-8642-f611851881bd"
 }
 
 # The following `can()` is used for when disable_telemetry = true

@@ -12,6 +12,8 @@ module "mod_az_maps" {
   source  = "azurenoops/overlays-azmaps/azurerm"
   version = ">= 1.0.0"
 
+  depends_on = [ module.mod_workload_network ]
+
   # By default, this module will create a resource group and 
   # provide a name for an existing resource group. If you wish 
   # to use an existing resource group, change the option 
@@ -22,7 +24,7 @@ module "mod_az_maps" {
   deploy_environment           = var.required.deploy_environment
   org_name                     = var.required.org_name
   environment                  = var.required.environment
-  workload_name                = "gsa"
+  workload_name                = var.wl_name
 
   sku           = var.maps_sku
   storage_units = var.maps_storage_units
