@@ -31,10 +31,16 @@ variable "publisher_name" {
   type        = string
 }
 
+variable "min_api_version" {
+  description = "The minimum supported REST API version."
+  type        = string
+  default     = "2019-12-01"
+}
+
 variable "enable_redis_cache" {
   description = "Enables a Redis Cache to be used with the API Management instance."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "enable_user_identity" {
@@ -46,25 +52,5 @@ variable "enable_user_identity" {
 variable "enable_app_insights" {
   description = "Enables an Application Insights instance to be used with the API Management instance."
   type        = bool
-  default     = false
-}
-
-#####################################
-# Networking Configuration         ## 
-#####################################
-
-variable "apim_subnet_name" {
-  description = "Name of the subnet for the API Management"
-  type        = string
-}
-
-variable "private_endpoint_subnet_prefix" {
-  description = "The address prefix to use for the subnet."
-  type        = list(string)
-  default     = []
-}
-
-variable "private_endpoint_subnet_name" {
-  description = "Name of the subnet for the private endpoint"
-  type        = string
+  default     = true
 }

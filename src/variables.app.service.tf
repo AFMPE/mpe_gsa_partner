@@ -15,16 +15,16 @@ variable "ase_subnet_name" {
 variable "app_service_apps" {
   description = "A list of apps to add to the app service environment."
   type = map(object({
-    workload_name                = string
-    app_service_name             = string
-    app_service_plan_sku_name    = string
-    enable_private_endpoint      = optional(bool)
-    existing_private_dns_zone    = optional(string)
-    create_app_service_plan      = bool
-    private_endpoint_subnet_name = string
-    deployment_slot_count        = number
-    app_service_resource_type    = string
-    app_service_plan_os_type     = string
+    workload_name                 = string
+    create_app_service_plan       = bool
+    app_service_name              = string
+    app_service_plan_sku_name     = string
+    app_service_resource_type     = string
+    app_service_plan_os_type      = string
+    deployment_slot_count         = number
+    website_run_from_package      = optional(string)
+    app_service_plan_worker_count = optional(number)
+    create_app_keyvault           = optional(bool)
     site_config = object({
       always_on = optional(bool)
       application_stack = optional(object({
@@ -55,10 +55,8 @@ variable "app_service_apps" {
       use_32_bit_worker                       = optional(bool)
       websockets_enabled                      = optional(bool)
     })
-    website_run_from_package      = optional(string)
-    app_service_plan_worker_count = optional(number)
     create_app_container_registry = optional(bool)
-    acr_sku                       = optional(string)
+    enable_acr_private_endpoint   = optional(bool)
   }))
   default = null
 }

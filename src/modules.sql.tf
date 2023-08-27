@@ -10,7 +10,7 @@ AUTHOR/S: jspinella
 
 module "mod_gsa_sql" {
   source  = "azurenoops/overlays-azsql/azurerm"
-  version = ">= 0.2.4"
+  version = "~> 2.0"
 
   depends_on = [module.mod_workload_network]
 
@@ -65,7 +65,7 @@ module "mod_gsa_sql" {
   # To use existing private DNS zone specify `existing_private_dns_zone` with valid zone name
   enable_private_endpoint      = var.enable_private_endpoint
   virtual_network_name         = module.mod_workload_network.virtual_network_name
-  existing_private_subnet_name = "ampe-eus-gsa-dev-pe-snet"
+  existing_private_subnet_name = "ampe-eus-gsa-prod-pe-snet"
 
   # AD administrator for an Azure SQL server
   # Allows you to set a user or group as the AD administrator for an Azure SQL server

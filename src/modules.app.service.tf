@@ -22,8 +22,9 @@ module "mod_app_service_environment" {
   environment                  = var.required.environment
   workload_name                = var.wl_name
 
-  ase_subnet_name      = var.ase_subnet_name
+  ase_subnet_name      = "ampe-eus-gsa-prod-app-snet"
   virtual_network_name = module.mod_workload_network.virtual_network_name
+  existing_nsg_name    = "ampe-eus-gsa-prod-app-nsg"
 
   # Tags
   add_tags = var.default_tags # Tags to be applied to all resources
@@ -33,6 +34,8 @@ module "mod_app_service_environment" {
 module "mod_app_service" {
   source  = "azurenoops/overlays-app-service/azurerm"
   version = "~> 2.0"
+
+  depends_on = [module.mod_workload_network, module.mod_app_service_environment]
 
   for_each = var.app_service_apps
 
@@ -47,6 +50,10 @@ module "mod_app_service" {
   # ASE Configuration
   enable_app_service_environment = true
   app_service_environment_name   = module.mod_app_service_environment.ase_name
+
+  # Private Endpoint Configuration
+  virtual_network_name         = module.mod_workload_network.virtual_network_name
+  private_endpoint_subnet_name = "ampe-eus-gsa-prod-pe-snet"
 
   # App Service Configuration
   create_app_service_plan       = each.value.create_app_service_plan
@@ -70,17 +77,11 @@ module "mod_app_service" {
 
   # Key Vault Configuration
   create_app_keyvault                = each.value.create_app_keyvault ? each.value.create_app_keyvault : false
-  existing_keyvault_private_dns_zone = each.value.create_app_keyvault ? module.mod_workload_network.private_dns_zone_names[0] : null
+  existing_keyvault_private_dns_zone = each.value.create_app_keyvault ? module.mod_workload_network.private_dns_zone_names[3] : null
 
   # Storage Configuration
-  existing_storage_private_dns_zone = each.value.app_service_resource_type == "FunctionApp" ? module.mod_workload_network.private_dns_zone_names[0] : null
-
-  # Private Endpoint Configuration
-  virtual_network_name         = module.mod_workload_network.virtual_network_name
-  private_endpoint_subnet_name = module.mod_workload_network.subnet_ids_names[0]
+  existing_storage_private_dns_zone = each.value.app_service_resource_type == "FunctionApp" ? module.mod_workload_network.private_dns_zone_names[1] : null
 
   # Tags
   add_tags = var.default_tags # Tags to be applied to all resources
-
-  depends_on = [module.mod_workload_network, module.mod_app_service_environment]
 }

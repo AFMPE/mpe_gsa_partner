@@ -19,6 +19,7 @@ variable "default_tags" {
 variable "subscription_id_partners_gsa_dev" {
   description = "The Azure Subscription ID where the resources in this module should be deployed."
   type        = string
+  default     = null
   sensitive   = true
 }
 

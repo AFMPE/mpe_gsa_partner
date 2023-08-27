@@ -10,7 +10,7 @@ AUTHOR/S: jspinella
 
 module "mod_az_maps" {
   source  = "azurenoops/overlays-azmaps/azurerm"
-  version = ">= 1.0.0"
+  version = "~> 1.0"
 
   depends_on = [ module.mod_workload_network ]
 

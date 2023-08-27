@@ -11,7 +11,7 @@
 
 required = {
   org_name           = "ampe"   # This Prefix will be used on most deployed resources.  10 Characters max.
-  deploy_environment = "dev"    # dev | test | prod
+  deploy_environment = "prod"    # dev | test | prod
   environment        = "public" # public | usgovernment
 }
 
@@ -40,12 +40,12 @@ wl_name = "gsa"
 deployed_to_hub_subscription = false
 
 # Vnet Address Space
-wl_vnet_address_space = ["10.0.124.0/23"]
+wl_vnet_address_space = ["10.0.126.0/23"]
 
 wl_vnet_subnets = {
   "default" = {
     name             = "default"
-    address_prefixes = ["10.0.125.0/27"]
+    address_prefixes = ["10.0.127.0/27"]
     service_endpoints = [
       "Microsoft.Storage",
     ]
@@ -63,13 +63,13 @@ wl_vnet_subnets = {
         source_port_range          = "*",
         destination_port_ranges    = ["22", "80", "443", "3389"],
         source_address_prefixes    = ["10.0.120.0/26", "10.0.115.0/26", "10.0.100.0/24"],
-        destination_address_prefix = "10.0.124.0/23"
+        destination_address_prefix = "10.0.126.0/23"
       }
     ]
   },
   "vm" = {
     name             = "vm"
-    address_prefixes = ["10.0.125.96/27"]
+    address_prefixes = ["10.0.127.96/27"]
     service_endpoints = [
       "Microsoft.Storage",
     ]
@@ -78,7 +78,7 @@ wl_vnet_subnets = {
   },
   "apim" = {
     name             = "apim"
-    address_prefixes = ["10.0.125.32/27"]
+    address_prefixes = ["10.0.127.32/27"]
     service_endpoints = [
       "Microsoft.KeyVault",
       "Microsoft.Sql",
@@ -91,7 +91,7 @@ wl_vnet_subnets = {
   },
   "pe" = {
     name             = "pe"
-    address_prefixes = ["10.0.125.64/27"]
+    address_prefixes = ["10.0.127.64/27"]
     service_endpoints = [
       "Microsoft.KeyVault",
       "Microsoft.Sql",
@@ -103,7 +103,7 @@ wl_vnet_subnets = {
   },
   "app" = {
     name             = "app"
-    address_prefixes = ["10.0.124.0/24"]
+    address_prefixes = ["10.0.126.0/24"]
     service_endpoints = [
       "Microsoft.KeyVault",
       "Microsoft.Sql",
@@ -150,6 +150,8 @@ wl_route_table_routes = {
     next_hop_type  = "Internet"
   }
 }
+
+wl_private_dns_zones = ["privatelink.vaultcore.azure.net", "privatelink.azurecr.io", "privatelink.blob.core.windows.net", "privatelink.redis.cache.windows.net"]
 
 
 #############################
@@ -212,6 +214,7 @@ enable_boot_diagnostics          = false
 ## SQL Configuration  ###
 #########################
 
+# SQL Server Configuration
 sql_databases = [
   {
     name        = "CastrumDB"
@@ -219,6 +222,7 @@ sql_databases = [
   }
 ]
 
+# Private Endpoint Configuration
 enable_private_endpoint = true
 
 ################################
@@ -232,19 +236,13 @@ maps_storage_units = 1
 ## Azure API Management  ###
 ############################
 
-publisher_email                = "gsa_admins@missionpartners.us"
-publisher_name                 = "afmpe-gsa"
-sku_tier                       = "Developer"
-sku_capacity                   = 1
-enable_user_identity           = true
-apim_subnet_name               = "ampe-eus-gsa-dev-apim-snet"
-private_endpoint_subnet_name   = "ampe-eus-gsa-dev-pe-snet"
-
-###############################
-## Azure App Service Env  ###
-###############################
-
-ase_subnet_name = "ampe-eus-gsa-dev-app-snet"
+# API Management Configuration
+publisher_email              = "gsa_admins@missionpartners.us"
+publisher_name               = "afmpe-gsa"
+sku_tier                     = "Developer"
+min_api_version              = "2019-12-01"
+sku_capacity                 = 1
+enable_user_identity         = true
 
 #########################
 ## Azure App Service  ###
@@ -262,6 +260,10 @@ app_service_apps = {
     deployment_slot_count         = 1
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
+
+    # ACR Configuration
+    create_app_container_registry = false
+    enable_acr_private_endpoint   = false
 
     # Key Vault Configuration
     create_app_keyvault = true
@@ -332,6 +334,10 @@ app_service_apps = {
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
 
+    # ACR Configuration
+    create_app_container_registry = false
+    enable_acr_private_endpoint   = false
+
     # Key Vault Configuration
     create_app_keyvault = true
 
@@ -362,6 +368,10 @@ app_service_apps = {
     deployment_slot_count         = 2
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
+
+    # ACR Configuration
+    create_app_container_registry = false
+    enable_acr_private_endpoint   = false
 
     # Key Vault Configuration
     create_app_keyvault = true
@@ -394,6 +404,10 @@ app_service_apps = {
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
 
+    # ACR Configuration
+    create_app_container_registry = false
+    enable_acr_private_endpoint   = false
+
     # Key Vault Configuration
     create_app_keyvault = true
 
@@ -401,7 +415,7 @@ app_service_apps = {
     site_config = {
       always_on = true
       application_stack = {
-        dotnet_version = "6.0"
+        dotnet_version = "v6.0"
       }
       use_32_bit_worker        = false
       health_check_path        = "/health"
@@ -426,6 +440,10 @@ app_service_apps = {
     website_run_from_package      = "1"
     app_service_plan_worker_count = 1
 
+    # ACR Configuration
+    create_app_container_registry = false
+    enable_acr_private_endpoint   = false
+
     # Key Vault Configuration
     create_app_keyvault = true
 
@@ -449,6 +467,3 @@ app_service_apps = {
   },
 }
 
-###########################
-## Azure Functions App  ###
-###########################

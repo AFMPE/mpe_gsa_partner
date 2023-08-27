@@ -13,7 +13,7 @@ AUTHOR/S: jspinella
 
 module "mod_bastion_virtual_machine" {
   source  = "azurenoops/overlays-virtual-machine/azurerm"
-  version = ">=1.0.0"
+  version = "~> 1.0"
 
   depends_on = [module.mod_workload_network]
 
@@ -22,11 +22,11 @@ module "mod_bastion_virtual_machine" {
   location                     = module.mod_azure_region_lookup.location_cli
   deploy_environment           = var.required.deploy_environment
   org_name                     = var.required.org_name
-  workload_name                = "gsa-jmp"
+  workload_name                = "${var.wl_name}-jmp"
 
   # Shared Services Network Configuration
   virtual_network_name = module.mod_workload_network.virtual_network_name
-  subnet_name          = "ampe-eus-gsa-dev-vm-snet"
+  subnet_name          = "ampe-eus-gsa-prod-vm-snet"
 
   # This module support multiple Pre-Defined windows and Windows Distributions.
   # Check the README.md file for more pre-defined images for Ubuntu, Centos, RedHat.
@@ -49,7 +49,7 @@ module "mod_bastion_virtual_machine" {
   # Network Seurity group port definitions for each Virtual Machine 
   # NSG association for all network interfaces to be added automatically.
   # Using 'existing_network_security_group_name' is supplied then the module will use the existing NSG.
-  existing_network_security_group_name = "ampe-eus-gsa-dev-vm-nsg" #var.existing_network_security_group_name
+  existing_network_security_group_name = "ampe-eus-gsa-prod-vm-nsg" #var.existing_network_security_group_name
   nsg_inbound_rules                    = var.nsg_inbound_rules
 
   # Boot diagnostics are used to troubleshoot virtual machines by default. 
