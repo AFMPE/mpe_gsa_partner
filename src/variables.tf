@@ -19,17 +19,21 @@ variable "default_tags" {
 variable "subscription_id_partners_gsa_dev" {
   description = "The Azure Subscription ID where the resources in this module should be deployed."
   type        = string
+  default     = null
+  sensitive   = true
 }
 
 variable "subscription_id_partners_gsa_prod" {
   description = "The Azure Subscription ID where the resources in this module should be deployed."
   type        = string
   default     = null
+  sensitive   = true
 }
 
 variable "subscription_id_hub" {
   description = "The Azure Subscription ID where the hub resources are deployed."
   type        = string
+  sensitive   = true
 }
 
 variable "hub_rg_name" {
@@ -44,6 +48,21 @@ variable "hub_vnet_name" {
 
 variable "hub_fw_name" {
   description = "The name of the hub firewall."
+  type        = string
+}
+
+variable "hub_log_rg_name" {
+  description = "The name of the resource group in which the hub log analytics is deployed."
+  type        = string
+}
+  
+variable "hub_log_name" {
+  description = "The name of the hub log analytics."
+  type        = string
+}
+
+variable "hub_log_st_name" {
+  description = "The name of the hub storage account."
   type        = string
 }
 

@@ -8,7 +8,7 @@
 variable "sql_admin_login" {
   description = "The admin username to use for the SQL Server."
   type        = string
-  default     = "admingsadev"
+  default     = "admingsa"
   sensitive   = true
 }
 

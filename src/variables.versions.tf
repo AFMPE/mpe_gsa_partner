@@ -33,6 +33,6 @@ variable "provider_azurerm_features_virtual_machine" {
 
 variable "provider_azurerm_features_resource_group" {
   default = {
-    prevent_deletion_if_contains_resources = true
+    prevent_deletion_if_contains_resources = false
   }
 }

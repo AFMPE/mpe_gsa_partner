@@ -14,7 +14,8 @@ AUTHOR/S: jspinella
 terraform {
   # It is recommended to use remote state instead of local
   backend "azurerm" {
-    key = "afmpe-workload-spoke"
+    #key = "core-gsa-dev-tfstate"
+    key = "core-gsa-prod-tfstate"
   }
   required_providers {
     azurerm = {
